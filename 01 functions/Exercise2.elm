@@ -3,27 +3,24 @@ module Main exposing (main)
 import Html exposing (text)
 
 
-uppercaseLongNames : String -> ( String, Int )
-uppercaseLongNames name =
-    let
-        nameLength =
-            String.length name
-    in
-    if nameLength > 10 then
-        ( String.toUpper name, nameLength )
+uppercaseNameLongerThan : String -> Int -> String
+uppercaseNameLongerThan name maxLength =
+    if String.length name > maxLength then
+        String.toUpper name
 
     else
-        ( name, nameLength )
-
-
-showNameWithLength : String -> String
-showNameWithLength name =
-    let
-        ( casedName, nameLength ) =
-            uppercaseLongNames name
-    in
-    casedName ++ " - name length: " ++ Basics.toString nameLength
+        name
 
 
 main =
-    text (showNameWithLength "Diogo Korok")
+    let
+        name =
+            "Diogo Korok"
+
+        length =
+            String.length name
+    in
+    uppercaseNameLongerThan name 10
+        ++ " - length: "
+        ++ Basics.toString length
+        |> Html.text
