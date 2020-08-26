@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Html exposing (text)
+import Html exposing (Html, text)
 
 
 uppercaseNameLongerThan : String -> Int -> String
@@ -12,6 +12,7 @@ uppercaseNameLongerThan name maxLength =
         name
 
 
+main : Html msg
 main =
     let
         name =

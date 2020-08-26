@@ -4,6 +4,7 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (style)
 
 
+wordCount : String -> Int
 wordCount =
     String.words >> List.length
 
@@ -23,6 +24,7 @@ makeExerciseText exercise result =
         ]
 
 
+main : Html msg
 main =
     let
         calledAsInfix =
