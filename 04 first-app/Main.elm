@@ -56,7 +56,21 @@ view model =
         [ h3 []
             [ text ("Total Calories: " ++ toString model.currentCalories) ]
         , div []
-            [ input [ type_ "number", step "1", placeholder "Calories", value (toString model.caloriesToAdd), onInput SetCalorie ] []
+            [ input
+                [ type_ "number"
+                , step "1"
+                , placeholder "Calories"
+                , value
+                    (case model.caloriesToAdd of
+                        0 ->
+                            ""
+
+                        _ ->
+                            toString model.caloriesToAdd
+                    )
+                , onInput SetCalorie
+                ]
+                []
             ]
         , button
             [ type_ "button"
