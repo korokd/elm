@@ -4,34 +4,41 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (style)
 
 
+wordCount =
+    String.words >> List.length
+
+
 (~=) : String -> String -> Bool
 (~=) leftString rightString =
     String.left 1 leftString == String.left 1 rightString
 
 
-makeExerciseText : Int -> Bool -> Html msg
-makeExerciseText exercise almostEqual =
+makeExerciseText : String -> String -> Html msg
+makeExerciseText exercise result =
     div []
-        [ text ("Exercise " ++ Basics.toString exercise ++ ":")
+        [ text ("Exercise " ++ exercise ++ ":")
         , div []
-            [ text (Basics.toString almostEqual)
+            [ text result
             ]
         ]
 
 
 main =
     let
-        calledInfix =
+        calledAsInfix =
             "abacate" ~= "abacaxi"
 
-        calledPrefix =
+        calledAsPrefix =
             (~=) "abacate" "carambola"
     in
     div []
-        [ div [ style [("margin-bottom", "10px")] ]
-            [ makeExerciseText 1 calledInfix
+        [ div [ style [ ( "margin-bottom", "10px" ) ] ]
+            [ makeExerciseText "1" (Basics.toString calledAsInfix)
+            ]
+        , div [ style [ ( "margin-bottom", "10px" ) ] ]
+            [ makeExerciseText "2" (Basics.toString calledAsPrefix)
             ]
         , div []
-            [ makeExerciseText 2 calledPrefix
+            [ makeExerciseText "3" (Basics.toString (wordCount "Abra Kadabra Alakazam"))
             ]
         ]
