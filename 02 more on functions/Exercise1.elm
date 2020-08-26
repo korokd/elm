@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Html exposing (text)
+import Html exposing (div, text)
 
 
 (~=) : String -> String -> Bool
@@ -9,4 +9,18 @@ import Html exposing (text)
 
 
 main =
-    text (Basics.toString ("abacate" ~= "abacaxi"))
+    let
+        calledInfix =
+            "abacate" ~= "abacaxi"
+
+        calledPrefix =
+            (~=) "abacate" "carambola"
+    in
+    div []
+        [ div []
+            [ text (Basics.toString calledInfix)
+            ]
+        , div []
+            [ text (Basics.toString calledPrefix)
+            ]
+        ]
