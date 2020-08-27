@@ -38,11 +38,37 @@ type Msg
     | DeletePlay Play
 
 
+makeNewId : Model -> Int
+makeNewId model =
+    (List.map .id model.players |> List.sort |> List.reverse |> List.head |> Maybe.withDefault 0) + 1
+
+
+makeNewPlayer : Model -> Player
+makeNewPlayer model =
+    Player (makeNewId model) model.name 0
+
+
+saveNewPlayer : Model -> Model
+saveNewPlayer model =
+    { model | players = makeNewPlayer model :: model.players }
+
+
 update : Msg -> Model -> Model
 update msg model =
     case msg of
         Input name ->
             { model | name = name }
+
+        Save ->
+            case model.playerId of
+                Nothing ->
+                    saveNewPlayer model
+
+                Just playerId ->
+                    model
+
+        Cancel ->
+            { model | name = initModel.name }
 
         _ ->
             model
