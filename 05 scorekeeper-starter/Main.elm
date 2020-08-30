@@ -13,7 +13,10 @@ type alias Player =
 
 
 type alias Play =
-    { id : Int, playerId : Int, name : String, points : Int }
+    { id : Int
+    , playerId : Int
+    , points : Int
+    }
 
 
 type alias Model =
@@ -38,21 +41,6 @@ type Msg
     | DeletePlay Play
 
 
-makeNewId : Model -> Int
-makeNewId model =
-    (List.map .id model.players |> List.sort |> List.reverse |> List.head |> Maybe.withDefault 0) + 1
-
-
-makeNewPlayer : Model -> Player
-makeNewPlayer model =
-    Player (makeNewId model) model.name 0
-
-
-saveNewPlayer : Model -> Model
-saveNewPlayer model =
-    { model | players = makeNewPlayer model :: model.players }
-
-
 update : Msg -> Model -> Model
 update msg model =
     case msg of
@@ -60,18 +48,68 @@ update msg model =
             { model | name = name }
 
         Save ->
-            case model.playerId of
-                Nothing ->
-                    saveNewPlayer model
+            if String.isEmpty model.name then
+                model
 
-                Just playerId ->
-                    model
+            else
+                let
+                    modelWithPlayerChanges =
+                        save model
+                in
+                { modelWithPlayerChanges | name = initModel.name, playerId = initModel.playerId }
 
         Cancel ->
-            { model | name = initModel.name }
+            { model | name = initModel.name, playerId = Nothing }
 
         _ ->
             model
+
+
+save : Model -> Model
+save model =
+    case model.playerId of
+        Just id ->
+            edit model id
+
+        Nothing ->
+            add model
+
+
+add : Model -> Model
+add model =
+    let
+        player =
+            Player (List.length model.players) model.name 0
+    in
+    { model | players = player :: model.players }
+
+
+edit : Model -> Int -> Model
+edit model id =
+    let
+        newPlayers =
+            List.map
+                (\player ->
+                    if player.id == id then
+                        { player | name = model.name }
+
+                    else
+                        player
+                )
+                model.players
+    in
+    { model | players = newPlayers }
+
+
+view : Model -> Html Msg
+view model =
+    div [ class "scoreboard" ]
+        [ h1 [] [ text "Score Keeper" ]
+
+        -- , playerList model
+        , playerForm model
+        , text (toString model)
+        ]
 
 
 playerForm : Model -> Html Msg
@@ -80,14 +118,6 @@ playerForm model =
         [ input [ type_ "text", placeholder "Add/Edit Player...", onInput Input, value model.name ] []
         , button [ type_ "Submit" ] [ text "Save" ]
         , button [ type_ "Button", onClick Cancel ] [ text "Cancel" ]
-        ]
-
-
-view : Model -> Html Msg
-view model =
-    div [ class "scoreboard" ]
-        [ h1 [] [ text "Score Keeper" ]
-        , playerForm model
         ]
 
 
