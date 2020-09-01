@@ -200,8 +200,9 @@ playListItem model play =
 
 playerForm : Model -> Html Msg
 playerForm model =
-    Html.form [ onSubmit Save ]
-        [ input [ type_ "text", placeholder "Add/Edit Player...", onInput Input, value model.name ] []
+    Html.form
+        [ onSubmit Save ]
+        [ input [ classList [ ( "edit", model.playerId /= Nothing ) ], type_ "text", placeholder "Add/Edit Player...", onInput Input, value model.name ] []
         , button [ type_ "Submit" ] [ text "Save" ]
         , button [ type_ "Button", onClick Cancel ] [ text "Cancel" ]
         ]
@@ -244,7 +245,7 @@ playerListItem model player =
             , onClick (Edit player)
             ]
             []
-        , div []
+        , div [ classList [ ( "edit", model.playerId == Just player.id ) ] ]
             [ text player.name ]
         , button
             [ type_ "button"
