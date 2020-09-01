@@ -105,8 +105,7 @@ view : Model -> Html Msg
 view model =
     div [ class "scoreboard" ]
         [ h1 [] [ text "Score Keeper" ]
-
-        -- , playerList model
+        , playerList model
         , playerForm model
         , text (toString model)
         ]
@@ -118,6 +117,66 @@ playerForm model =
         [ input [ type_ "text", placeholder "Add/Edit Player...", onInput Input, value model.name ] []
         , button [ type_ "Submit" ] [ text "Save" ]
         , button [ type_ "Button", onClick Cancel ] [ text "Cancel" ]
+        ]
+
+
+playerList : Model -> Html Msg
+playerList model =
+    div []
+        [ playerListHeader
+        , playerListBody model
+        , playerListFooter model
+        ]
+
+
+playerListHeader : Html Msg
+playerListHeader =
+    header []
+        [ div [] [ text "Name" ]
+        , div [] [ text "Points" ]
+        ]
+
+
+playerListBody : Model -> Html Msg
+playerListBody model =
+    ul []
+        (List.map playerListItem model.players)
+
+
+playerListItem : Player -> Html Msg
+playerListItem player =
+    li []
+        [ i
+            [ class "edit"
+            , onClick (Edit player)
+            ]
+            []
+        , div []
+            [ text player.name ]
+        , button
+            [ type_ "button"
+            , onClick (Score player 2)
+            ]
+            [ text "2pt" ]
+        , button
+            [ type_ "button"
+            , onClick (Score player 3)
+            ]
+            [ text "3pt" ]
+        , div []
+            [ text (toString player.points) ]
+        ]
+
+
+playerListFooter : Model -> Html Msg
+playerListFooter model =
+    let
+        totalPoints =
+            List.map .points model.players |> List.sum
+    in
+    footer []
+        [ div [] [ text "Total:" ]
+        , div [] [ text (toString totalPoints) ]
         ]
 
 
