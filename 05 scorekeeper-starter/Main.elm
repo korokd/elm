@@ -154,7 +154,47 @@ view model =
         [ h1 [] [ text "Score Keeper" ]
         , playerList model
         , playerForm model
-        , text (toString model)
+        , playList model
+        ]
+
+
+playList : Model -> Html Msg
+playList model =
+    div []
+        [ playListHeader
+        , playListBody model
+        ]
+
+
+playListHeader : Html Msg
+playListHeader =
+    header []
+        [ div [] [ text "Plays" ]
+        , div [] [ text "Points" ]
+        ]
+
+
+playListBody : Model -> Html Msg
+playListBody model =
+    let
+        playToListItem =
+            playListItem model
+    in
+    model.plays
+        |> List.map playToListItem
+        |> ul []
+
+
+playListItem : Model -> Play -> Html Msg
+playListItem model play =
+    li []
+        [ i
+            [ class "Remove"
+            , onClick (DeletePlay play)
+            ]
+            []
+        , div [] [ text (playScorer model.players play) ]
+        , div [] [ text (toString play.points) ]
         ]
 
 
@@ -186,8 +226,6 @@ playerListHeader =
 
 playerListBody : Model -> Html Msg
 playerListBody model =
-    -- ul []
-    --     (List.map playerListItem model.players)
     let
         playerToListItem =
             playerListItem model
