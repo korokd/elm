@@ -8,8 +8,21 @@ import Html.Events exposing (..)
 type alias Player =
     { id : Int
     , name : String
-    , points : Int
     }
+
+
+playerPoints : List Play -> Player -> Int
+playerPoints plays player =
+    List.filterMap
+        (\play ->
+            if play.playerId == player.id then
+                Just play.points
+
+            else
+                Nothing
+        )
+        plays
+        |> List.sum
 
 
 type alias Play =
@@ -17,6 +30,21 @@ type alias Play =
     , playerId : Int
     , points : Int
     }
+
+
+playScorer : List Player -> Play -> String
+playScorer players play =
+    List.filterMap
+        (\player ->
+            if player.id == play.playerId then
+                Just player.name
+
+            else
+                Nothing
+        )
+        players
+        |> List.head
+        |> Maybe.withDefault ""
 
 
 type alias Model =
@@ -79,7 +107,7 @@ add : Model -> Model
 add model =
     let
         player =
-            Player (List.length model.players) model.name 0
+            Player (List.length model.players) model.name
     in
     { model | players = player :: model.players }
 
@@ -141,14 +169,18 @@ playerListBody : Model -> Html Msg
 playerListBody model =
     -- ul []
     --     (List.map playerListItem model.players)
+    let
+        playerToListItem =
+            playerListItem model
+    in
     model.players
         |> List.sortBy .name
-        |> List.map playerListItem
+        |> List.map playerToListItem
         |> ul []
 
 
-playerListItem : Player -> Html Msg
-playerListItem player =
+playerListItem : Model -> Player -> Html Msg
+playerListItem model player =
     li []
         [ i
             [ class "edit"
@@ -168,7 +200,7 @@ playerListItem player =
             ]
             [ text "3pt" ]
         , div []
-            [ text (toString player.points) ]
+            [ text (toString (playerPoints model.plays player)) ]
         ]
 
 
@@ -176,7 +208,7 @@ playerListFooter : Model -> Html Msg
 playerListFooter model =
     let
         totalPoints =
-            List.map .points model.players |> List.sum
+            List.map .points model.plays |> List.sum
     in
     footer []
         [ div [] [ text "Total:" ]
