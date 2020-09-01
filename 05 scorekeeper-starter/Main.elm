@@ -72,6 +72,9 @@ type Msg
 update : Msg -> Model -> Model
 update msg model =
     case msg of
+        Cancel ->
+            { model | name = initModel.name, playerId = Nothing }
+
         Input name ->
             { model | name = name }
 
@@ -86,11 +89,20 @@ update msg model =
                 in
                 { modelWithPlayerChanges | name = initModel.name, playerId = initModel.playerId }
 
-        Cancel ->
-            { model | name = initModel.name, playerId = Nothing }
+        Score player points ->
+            score model player points
 
         _ ->
             model
+
+
+score : Model -> Player -> Int -> Model
+score model player points =
+    let
+        newPlay =
+            Play (List.length model.plays) player.id points
+    in
+    { model | plays = newPlay :: model.plays }
 
 
 save : Model -> Model
