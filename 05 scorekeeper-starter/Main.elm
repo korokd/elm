@@ -75,6 +75,13 @@ update msg model =
         Cancel ->
             { model | name = initModel.name, playerId = Nothing }
 
+        Edit player ->
+            if model.playerId == Just player.id then
+                { model | name = "", playerId = Nothing }
+
+            else
+                { model | name = player.name, playerId = Just player.id }
+
         Input name ->
             { model | name = name }
 
