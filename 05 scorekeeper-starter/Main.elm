@@ -75,6 +75,9 @@ update msg model =
         Cancel ->
             { model | name = initModel.name, playerId = Nothing }
 
+        DeletePlay { id } ->
+            { model | plays = List.filter (\play -> play.id /= id) model.plays }
+
         Edit player ->
             if model.playerId == Just player.id then
                 { model | name = "", playerId = Nothing }
@@ -98,9 +101,6 @@ update msg model =
 
         Score player points ->
             score model player points
-
-        _ ->
-            model
 
 
 score : Model -> Player -> Int -> Model
